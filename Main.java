@@ -11,16 +11,22 @@ class Main {
     System.out.println("Determinant Solver");
     int size = Integer.parseInt(in.nextLine());
 
-    Random rand = new Random();
-    double[][] matrix = new double[size][size];
-    for(int i = 0; i < size; i++){
+    // Random rand = new Random();
+    // double[][] matrix = new double[size][size];
+    // for(int i = 0; i < size; i++){
 
-      for(int j = 0; j < size; j++){
-        matrix[i][j] = rand.nextDouble() * (double)rand.nextInt(1000);
-        System.out.print(" | " + matrix[i][j] + " | ");
-      }
-      System.out.println();
-    }
+    //   for(int j = 0; j < size; j++){
+    //     matrix[i][j] = rand.nextDouble() * (double)rand.nextInt(1000);
+    //     System.out.print(" | " + matrix[i][j] + " | ");
+    //   }
+    //   System.out.println();
+    // }
+
+    double[][] matrix = {
+      {2, 1, 1, 3},
+      {1, -1, -1, 0},
+      {1, 2, 1, 0},
+    };
     // double[][] matrix = {
     //   {1.0, 2.0, 6, 6},
     //   {4, 7, 3, 2},
@@ -46,18 +52,24 @@ class Main {
     //   {10, 9, 8, 7, 6, 5, 3, 4, 2, 1},
     //   {-10, -9, -8, -7, -6, -5, -4, -3, -2, -1},
     // };
-    double f = 0;
-    for(int i = 0; i < matrix[0].length; i++){
-      System.out.println(((double)i)/(matrix[0].length - 1) * 100 + " percent complete");
-      f += recurse(matrix, 0, i);
-      //System.out.println("running: " + f);
-    }
-    System.out.println("determinant " + f);
+    
+    // double f = 0;
+    // for(int i = 0; i < matrix[0].length; i++){
+    //   System.out.println(((double)i)/(matrix[0].length - 1) * 100 + " percent complete");
+    //   f += recurse(matrix, 0, i);
+    //   //System.out.println("running: " + f);
+    // }
+    // System.out.println("determinant " + f);
+
+    System.out.println(cramer (matrix, 1));
     in.close();
   }
 
   public static double recurse(double[][] mat , int r, int c){
     double a = mat[r][c];
+    if(mat.length <= 2){
+      return a * (mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]);
+    }
     // System.out.println("A " + a);
   
 
@@ -101,5 +113,34 @@ class Main {
     }
     // System.out.println("B" + b);
     return b;
+  }
+
+  public static double cramer(double[][]matrix, int r){
+    if (r >= matrix.length - 1){
+      return -1;
+    }
+    double[][] mat = new double[matrix.length - 1][matrix.length - 1];
+    for(int i = 0; i < mat.length; i++){
+      for(int j = 0; j < mat.length; j++){
+        mat[i][j] = matrix[i][j];
+      }
+    }
+    System.out.println(mat.length + " " + mat[0].length);
+    double f = 0;
+    for(int i = 0; i < mat[0].length; i++){
+      f += recurse(mat, 0, i);
+      //System.out.println("running: " + f);
+    }
+    
+    for(int i = 0; i < mat.length; i++){
+      mat[i][r] = matrix[i][matrix.length - 1];
+    }
+
+    double f1 = 0;
+    for(int i = 0; i < mat[0].length; i++){
+      f1 += recurse(mat, 0, i);
+    }
+
+    return f1/f;
   }
 }
